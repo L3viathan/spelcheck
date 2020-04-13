@@ -1,4 +1,4 @@
-# spelcheck
+# spelcheck 🖊️👎✨🎉
 
     pip install spelcheck
 
