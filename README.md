@@ -42,3 +42,6 @@ spelcheck.SPELCHECK_MINSCORE = 50  # be more aggressive
   should be a nonlocal name. I don't know if this is possible at all without
   changing our technique completely (maybe by parsing the source and looking at
   what function the inner function is defined in and what names exist there).
+- [ ] Support Python 3.8. At the moment this doesn't seem to work in 3.8, I
+  assume this is because of positional-only arguments which may have changed
+  how a code object looks like. This seems doable.
