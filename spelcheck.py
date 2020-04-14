@@ -21,23 +21,27 @@ builtins.__build_class__ = new
 
 
 def new_code_from_old(code, **kwargs):
-    return CodeType(
-        kwargs.get("co_argcount", code.co_argcount),
-        kwargs.get("co_kwonlyargcount", code.co_kwonlyargcount),
-        kwargs.get("co_nlocals", code.co_nlocals),
-        kwargs.get("co_stacksize", code.co_stacksize),
-        kwargs.get("co_flags", code.co_flags),
-        kwargs.get("co_code", code.co_code),
-        kwargs.get("co_consts", code.co_consts),
-        kwargs.get("co_names", code.co_names),
-        kwargs.get("co_varnames", code.co_varnames),
-        kwargs.get("co_filename", code.co_filename),
-        kwargs.get("co_name", code.co_name),
-        kwargs.get("co_firstlineno", code.co_firstlineno),
-        kwargs.get("co_lnotab", code.co_lnotab),
-        kwargs.get("co_freevars", code.co_freevars),
-        kwargs.get("co_cellvars", code.co_cellvars),
-    )
+    args = [
+        "co_argcount",
+        "co_kwonlyargcount",
+        "co_posonlyargcount",
+        "co_nlocals",
+        "co_stacksize",
+        "co_flags",
+        "co_code",
+        "co_consts",
+        "co_names",
+        "co_varnames",
+        "co_filename",
+        "co_name",
+        "co_firstlineno",
+        "co_lnotab",
+        "co_freevars",
+        "co_cellvars",
+    ]
+    if not hasattr(code, "co_posonlyargcount"):
+        args.remove("co_posonlyargcount")
+    return CodeType(*(kwargs.get(arg, getattr(code, arg)) for arg in args))
 
 
 def spellcheck(code, globals=globals()):
