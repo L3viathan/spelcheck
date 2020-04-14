@@ -4,7 +4,7 @@ import contextlib
 import builtins
 from fuzzywuzzy import process
 
-SPELCHECK_MINSCORE=75
+SPELCHECK_MINSCORE = 75
 
 old = builtins.__build_class__
 
