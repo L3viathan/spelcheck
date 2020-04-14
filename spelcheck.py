@@ -4,17 +4,17 @@ import contextlib
 import builtins
 from fuzzywuzzy import process
 
+SPELCHECK_MINSCORE=75
+
 old = builtins.__build_class__
 
-# TODO: check if closures work
 CodeType = type((lambda: 0).__code__)
 
 
 def new(body, name, *args, **kwargs):
     bases = args
     body.__code__ = spellcheck(body.__code__, globals=body.__globals__)
-    ret = old(body, name, *bases, **kwargs)
-    return ret
+    return old(body, name, *bases, **kwargs)
 
 
 builtins.__build_class__ = new
@@ -50,14 +50,18 @@ def spellcheck(code, globals=globals()):
             pre, LG, post = line.partition("LOAD_GLOBAL")
             pre, par, post = post.partition("(")
             names.append(post.rstrip(")"))
-    available_names = set(globals) | set(code.co_varnames)
+    available_names = set(globals) | set(code.co_varnames) | set(builtins.__dict__)
     misspelled = set(names) - available_names
     fixed, badglobals = {}, {}
     for wrong in misspelled:
-        better, _ = process.extractOne(wrong, available_names)
+        better, score = process.extractOne(wrong, available_names)
+        if score < SPELCHECK_MINSCORE:
+            continue
+        print(wrong, better, score)
         fixed[wrong] = better
-        if better not in globals:
-            badglobals[code.co_names.index(wrong)] = code.co_varnames.index(better)
+        if better not in globals and better not in builtins.__dict__:
+            if wrong in code.co_names:
+                badglobals[code.co_names.index(wrong)] = code.co_varnames.index(better)
     names = tuple(fixed.get(name, name) for name in code.co_names)
 
     bytecode = iter(code.co_code)
