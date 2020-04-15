@@ -63,7 +63,6 @@ def spellcheck(code, globals=globals()):
         )
         if score < SPELCHECK_MINSCORE:
             continue
-        print(wrong, better, score)
         fixed[wrong] = better
         if better not in globals and better not in builtins.__dict__:
             if wrong in code.co_names:
