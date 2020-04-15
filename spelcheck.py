@@ -2,7 +2,7 @@ import io
 import dis
 import contextlib
 import builtins
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 
 SPELCHECK_MINSCORE = 75
 
@@ -58,7 +58,9 @@ def spellcheck(code, globals=globals()):
     misspelled = set(names) - available_names
     fixed, badglobals = {}, {}
     for wrong in misspelled:
-        better, score = process.extractOne(wrong, available_names)
+        better, score = process.extractOne(
+            wrong, available_names, scorer=fuzz.token_sort_ratio
+        )
         if score < SPELCHECK_MINSCORE:
             continue
         print(wrong, better, score)
