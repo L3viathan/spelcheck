@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spelcheck"
-version = "0.3.0"
+version = "0.3.1"
 description = "Automagically spellcheck your classes"
 authors = ["L3viathan <git@l3vi.de>"]
 
